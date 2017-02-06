@@ -1,0 +1,1112 @@
+% PREAMBUŁA
+\documentclass[11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsfonts}
+\usepackage{bbm}
+\selectlanguage{polish}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage{indentfirst}
+\usepackage{latexsym}
+
+\newtheorem{df}{Definicja}[chapter]
+\newtheorem{tw}{Twierdzenie}[chapter]
+\newtheorem{stw}{Stwierdzenie}[chapter]
+\newtheorem{wn}{Wniosek}[chapter]
+\newtheorem{koment}{Komentarz}[chapter]
+\newtheorem{zal}{Założenie}[chapter]
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}}
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	
+	{\scshape\LARGE Uniwersytet Jagielloński \par}
+	\vspace{1cm}
+	{\scshape\Large Praca magisterska\par}
+	\vspace{4,5cm}
+	{\huge\bfseries Zastosowanie symetrii do wyceny opcji walutowych\par}
+	\vspace{2cm}
+	{\Large\itshape Kamil Pałka\par}
+	\vfill
+	\vspace{2cm}
+	\begin{flushright}	
+	promotor pracy \\
+	dr hab.~Piotr Kobak
+	\end{flushright}
+	\vfill
+
+% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+
+%PODZIĘKOWANIA
+\newpage
+\thispagestyle{empty}
+\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par\null\par
+\begin{flushright}
+Z podziękowaniami dla promotora.
+
+\end{flushright}
+
+
+
+\chapter*{Wstęp}
+W pracy rozważamy opcje walutowe na rynku, na którym możemy handlować dwiema walutami. Zakładamy istnienie stóp wolnych od ryzyka dla obu walut oraz że kurs wymiany jest procesem stochastycznym. Rozważamy zarówno przypadek dyskretny (model dwumianowy) jak i ciągły (Blacka-Scholesa). \\ 
+\indent Podczas wyceny opcji walutowej jedną z walut traktujemy jako podstawę naszych obliczeń (numeraire) a drugą jako aktywo ryzykowne, wypłacające ciągłą dywidentę (ponieważ istnieje dla niej stopa wolna od ryzyka). Czasami jednak zdarza się, że wygodniej jest wyceniać opcje w modelu symetrycznym do naszego pod względem ról, które pełnią obie waluty (waluta która w wyjściowym modelu była numeraire w modelu symetrycznym jest traktowana jako aktywo ryzykowne z dywidendą, a druga waluta jest w nim numeraire).
+Tytuł pracy odnosi się do tej właśnie symetrii ról (podobna tematyka jest poruszana w pracach Uwe Wystupa).
+ Celem pracy jest uzasadnienie że cena opcji jest taka sama w obu modelach (wyjściowym i symetrycznym) i zastosowanie tego faktu do wyceny opcji barierowych.
+Pierwszy rozdział stanowi wstęp teoretyczny, w którym zostają przywołane twierdzenie Girsanova, abstrakcyjny wzór Bayesa, twierdzenie o reprezentacji martyngałów. 
+Rozdział drugi zawiera opis symetrii w modelu dwumianowym.
+Rozdział trzeci opisuje wycenę na dwa sposoby w modelu Blacka-Scholesa.
+W rozdziale czwartym stosując rezultat z rozdziału trzeciego wyceniamy barierowe opcje binarne. 
+
+
+
+\chapter{Wprowadzenie teoretyczne}
+Przedstawiamy wypowiedzi twierdzeń z których korzystamy w dalszych rozdziałach pracy.
+
+\section{Przegląd twierdzeń}
+Często gdy mamy do czynienia z procesem Wienera z dryfem, zmiana miary prawdopodobieństwa na taką względem której dryf znika, znacząco upraszcza obliczenia. Twierdzeniem umożliwiającym taką zamianę jest twierdzenie Girsanova.  
+
+\begin{tw}(Twierdzenie Girsanova) $ $ \\
+Jeśli $W_t$ jest procesem Wienera względem miary $ \mathbb{P} $ to dla dowolnego $ \mu \in \mathbb{R} $ istnieje miara $ \widetilde{\mathbb{P}} $ względem której proces $ \widetilde{W_t} = W_t + \mu t $, $t \in [0 ; T]$ jest procesem Wienera. \\
+
+Pomiędzy miarami zachodzi związek $$d\mathbb{\tilde{P}} = e^{-\mu W_T - \frac{\mu^2}{2}T}d\mathbb{P}.$$
+\end{tw}
+\vspace{1cm}  
+
+Ze zmianą numeraire wiąże się zmiana miary neutralnej ze względu na ryzyko. Zależność pomiędzy wyjściową oraz nową miarą opisuje abstrakcyjny wzór Bayesa.
+
+\begin{tw}{(Abstrakcyjny wzór Bayesa)} \\
+Niech $Z_T$ będzie funkcją $\mathscr{F}_T$-mierzalną, a $X$ funkcją $\mathscr{F}_t$-mierzalną, $t \le T$,   $\mathbb{P}$, $\mathbb{Q}$ będą miarami prawdopodobieństwa, spełniającymi warunek 
+\begin{equation*}
+d\mathbb{Q} = Z_T d\mathbb{P}.
+\end{equation*}
+Przyjmijmy  $Z_s := \mathbb{E}^{\mathbb{P}} \left( X_T \middle| \mathscr{F}_s \right)$ wówczas:
+\begin{equation*}
+\mathbb{E}^{\mathbb{Q}} \left(X \middle| \mathscr{F}_s \right) = \frac{1}{Z_s}\mathbb{E}^{\mathbb{P}} \left( X Z_t \middle| \mathscr{F}_s \right) .
+\end{equation*} 
+\end{tw}
+
+
+\begin{df}(Proces Ito) $ $ \\
+Załóżmy że $W_t$ jest procesem Wienera w $(\Omega,\mathscr{F},\mathbb{P})$ względem filtracji $\{\mathscr{F}_t \}_{0 \le t \le T}$. Załóżmy ponadto że $\{ \mathscr{H}_t \}_{0 \le t \le T}$ jest filtracją względem której $W_t$ jest martyngałem. Procesem Ito będziemy nazywać każdy proces $\{A_t\}_{0 \le t \le T}$ spełniający warunki:
+\begin{itemize}
+\item $dA_t = u_tdt + v_t dW_t$,
+\item $u_t, v_t$ są $\mathscr{H}_t$-adaptowane, 
+\item odwzorowanie $[0,T] \times \Omega \ni (t,\omega) \mapsto v_t(\omega) \in \mathbb{R}$ jest $\mathscr{B} \times \mathscr{F}$ mierzalne, gdzie $\mathscr{B}$ jest $\sigma$-algebrą zbiorów borelowskich,
+\item $$\mathbb{P}\left(\bigforall _{t>0}: \int_{0}^{t} |u_t| dt < \infty  \right) = 1, $$
+\item $$\mathbb{P}\left(\bigforall _{t>0}: \int_{0}^{t} |v_t|^2 dt < \infty  \right) = 1. $$
+\end{itemize} 
+\end{df}
+
+Powyższa definicja pochodzi z pozycji $\cite{okse}$.
+ 
+
+\begin{stw}{(Reguła mnożenia dla procesów stochastycznych)} \\ 
+ Załóżmy że $\{A_t\}_{ \{0 \le t \le T\} }, \{B_t\}_{ \{0 \le t \le T\} }$, są procesami Ito względem przestrzeni z filtracją $(\Omega, \mathscr{F}, \{\mathscr{F}_t\}_{0 \le t \le T }, \mathbb{P}).$ \\
+ Jeśli:
+ $$dA_t = u_tdt + v_t dW_t$$
+ $$dB_t = x_tdt + y_t dW_t$$
+
+wówczas:
+\begin{equation*}
+d(A_tB_t) = A_tdB_t + B_tdA_t + v_t y_t dt. 
+\end{equation*}
+
+\end{stw}
+
+Powyższą równość można znaleźć w \cite{okse}, jako ćwiczenie 4.3. 
+\vspace{1cm}
+
+Opcje wyceniamy przy użyciu portfela replikującego, jego istnienie dowodzimy używając twierdzenia o reprezentacji martyngałów. 
+
+\vspace{0.3cm}
+\begin{tw}{(Tw. o reprezentacji martyngałów --- wersja dyskretna)} 
+$ $ \\ 
+Niech $\{ M_t \}_{t=0,1,...,T}$ będzie martyngałem a $\{ N_t \}_{t=0,1,...,T}$ innym martyngałem wówczas istnieje $\mathscr{F}$-przewidywalny proces $\{ \phi_t \}_{t=0,1,...,T}$ taki że :
+\begin{equation}
+N_t - N_0 = \sum_{t=1}^{T} \phi_t(M_{t}-M_{t-1}). 
+\end{equation}
+
+\end{tw}
+
+\begin{tw}{(Tw. o reprezentacji martyngałów --- wersja ciągła)} \\
+Niech $W_t$ będzie procesem Wienera w $(\Omega,\mathscr{F},\mathbb{P})$, a $\{\mathscr{F}_t \}_{0 \le t \le T}$ będzie filtracją tego procesu. Załóżmy ponadto że $ \{ Y_t \}_{0 \le t \le \infty}$ jest całkowalnym z kwadratem, $\{\mathscr{F}_t \}_{0 \le t \le T}$-adaptowanym martyngałem, wówczas istnieje $\{\mathscr{F}_t \}_{0 \le t \le T}$-adaptowany proces $\{ \gamma \}_{ 0 \le t \le \infty},$ taki że odwzorowanie \\ $[0,T] \times \Omega \ni (t,\omega) \mapsto \gamma_t(\omega) \in \mathbb{R}$ jest $\mathscr{B} \times \mathscr{F}$-mierzalne oraz spełniający równość:
+\begin{equation*}
+Y_t = Y_0 + \int_0^{t} \gamma_s \hspace{0,1 cm} dW_s,
+\end{equation*} a także:
+\begin{equation}
+\mathbb{E} \int_0^{T} |\gamma_s|^2 ds < \infty.
+\end{equation}
+\end{tw}
+\begin{proof}
+Patrz twierdzenie 4.3.4 w \cite{okse}.
+\end{proof}
+
+\section{Modele rynku finansowego postaci $[X_t, B_t]$}
+
+
+\begin{df}(Model rynku $[X_t, B_t]$) $ $ \\
+Modelem rynku $[X_t, B_t]$ będziemy nazywać parę złożoną z:
+\begin{itemize}
+\item procesu stochastycznego $\{X_t\}_{t \in I}$ na pewnej przestrzeni probablistycznej  $(\Omega, \mathscr{F},\mathbb{P})$ 
+\item procesu $\{ B_t \}_{t \in I} $ takiego że $B_t \in \mathbb{R}_{>0}$ dla $t \in I$.
+\end{itemize}
+
+\begin{koment}
+Model rynku $[X_t, B_t]$ interpretujemy jako model rynku złożonego z:
+\begin{itemize}
+\item ryzykownego aktywa niewypłacającego dywidendy którego procesem cen jest $X_t$
+\item depozytu bankowego, który w chwili $t$ zawiera $B_t$ jednostek waluty która służy do wyceny dóbr w 
+modelowanym przez nas rynku
+\end{itemize}  
+\end{koment}
+
+
+
+
+\end{df}
+
+
+
+
+
+Definicja ta ma zastosowanie w rozdziale drugim gdzie rozważamy \\ modele
+ $$[(1+q)^t S_t, (1+r)^t]$$ 
+$$[(1+r)^{t}S_t^{-1}, (1+q)^t]$$ a także w rozdziale trzecim, w którym pojawiają się 
+$$[e^{qt}S_t, e^{rt}]$$ $$[e^{rt}S_t^{-1}, e^{qt}].$$
+$ $ \\
+\begin{df}(Wartość portfela) $ $ \\
+Niech $\alpha,\beta$ będą liczbami rzeczywistymi. \\
+Wartością (w chwili $t$) portfela będziemy nazywali liczbę 
+$$V_t[\alpha, \beta] := \alpha X_t + \beta B_t.$$
+\end{df}
+
+\begin{koment}
+Ponieważ $V_t[1, 0] = X_t $ w tym miejscu widzimy że w naszym modelu $X_t$ nie wypłaca dywidendy. Jeśli modelujmy rynek, na którym ryzykownym aktywem jest $Y_t$, wypłacające ciągłą dywidendę według stopy $y$, wtedy wystarczy przyjąć $X_t = e^{yt}Y_t$.
+\end{koment}
+
+\begin{center} 
+Przyjmijmy oznaczenie $\Delta a_n = a_{n} - a_{n-1}$.
+\end{center}  
+ 
+\begin{df} Jeśli w modelu $[X_t, B_t]$ mamy $I = \{0,1,...,T \}$ wówczas strategią samofinansującą nazwiemy parę $(\phi_t, \psi_t)$ procesów takich że $\phi_t,\psi_t$ są $\mathscr{F}_{t-1}$ mierzalne oraz: 
+\begin{equation*}
+\Delta V_t[\phi_t,\psi_t] = \phi_t \Delta X_t + \psi_t \Delta B_t
+\end{equation*} 
+dla $t \in \{1,2,...,T\}$.
+
+\end{df}
+
+\begin{df} Jeśli w modelu $[X_t, B_t]$ mamy $I = [0,T]$ wówczas strategią samofinansującą nazwiemy parę $(\phi_t, \psi_t)$ procesów takich że $\phi_t,\psi_t$ są \\ $\mathscr{F}_{t}$-mierzalne oraz: 
+\begin{equation*}
+d V_t[\phi_t,\psi_t] = \phi_t d X_t + \psi_t d B_t
+\end{equation*}
+dla $t \in [0,T].$
+\end{df}
+
+Teraz kiedy już zdefiniowaliśmy strategie samofinansujące możemy przywołać założenie o braku arbitrażu.
+
+\begin{zal}(Brak arbitrażu) \\
+Nie istnieje samofinansująca strategia $ (\varphi_t, \phi_t) $, spełniająca warunki:
+\end{zal}
+
+\begin{equation*}
+\begin{split}
+& V_0[\varphi_0, \phi_0] =  0 \\
+& V_t[\varphi_t, \phi_t] \ge  0, \hspace{0,3 cm} t \in I  \\
+& P( V_T[\varphi_T, \phi_T] >  0 ) > 0. \\ 
+\end{split}
+\end{equation*}
+
+
+
+\begin{df}
+Miarą martyngałową w modelu $[X_t, B_t]$ będziemy nazywali każdą miarę prawdopodobieństwa $\mathbb{Q}$ względem której proces $ \{ \frac{X_t}{B_t} \}_{t \in I}$ jest martyngałem. 
+\end{df}
+
+
+\section{Miara martyngałowa w modelu Blacka-Scholesa}
+
+
+\begin{stw} Niech $\mathbb{P}$ będzie miarą fizyczną, $\{ W_t \}_{0 \le t \le T} $ będzie $\mathbb{P}$-procesem Wienera, a proces $S_t$ spełnia równanie:
+\begin{equation}
+dS_t = S_t(\mu dt + \sigma dW_t).
+\end{equation}
+\end{stw}
+
+
+Wówczas 
+\begin{equation*}
+dS_t = S_t(r dt + \sigma d\widetilde{W_t}),
+\end{equation*}
+gdzie $\widetilde{W_t}$ jest procesem Wienera względem miary martyngałowej w modelu $[S_t, e^{rt}]$.  
+\begin{proof}
+Szukamy miary względem, której $e^{-rt}S_t$ jest martyngałem.
+\begin{equation*}
+\begin{split}
+d(e^{-rt}S_t) = & d(e^{-rt})S_t  + e^{-rt} dS_t \\
+              = & -re^{-rt}S_t dt + e^{-rt}(\mu S_t dt + \sigma S_t dW_t) \\
+              = & e^{-rt}S_t( (-r + \mu)dt + \sigma dW_t)
+\end{split}
+\end{equation*}
+
+By $e^{-rt}S_t$ był martyngałem musimy wyeliminować dryf $(-r+\mu)$. W tym celu posłużymy się twierdzeniem Girsanova, na mocy którego istnieje miara $\mathbb{Q}$ względem której:
+\begin{equation*}
+\widetilde{W_t} = \frac{-r + \mu}{\sigma}t + W_t,
+\end{equation*}
+jest procesem Wienera.
+
+Wracając do wyjściowego równania na $dS_t$ otrzymujemy:
+\begin{equation*}
+dS_t = S_t(\mu dt + \underbrace{(r-\mu)dt + \sigma\widetilde{W_t}dt}_{\sigma dW_t} ).
+\end{equation*}
+
+\end{proof}
+
+
+\section{Kurs odwrotny w modelu Blacka-Scholesa}
+Równanie na kurs odwrotny ma zastosowanie w sekcji 3.1, gdzie rozważamy model $[S^{-1}_t e^{rt}, e^{qt}]$ wychodząc od równania dla $S_t$.
+
+\begin{stw}
+ Załóżmy że $S_T$ spełnia równanie: 
+ \begin{equation*} 
+dS_t = \mu S_tdt + \sigma S_t dW_t  
+ \end{equation*}
+
+ Wtedy proces $\frac{1}{S_t}$  spełnia: \\
+\begin{equation*}
+d\frac{1}{S_t} = \frac{1}{S_t}( \ (-\mu+\sigma)dt - \sigma  d W_t \ ).
+\end{equation*} 
+\end{stw}
+
+\begin{proof}
+Wykorzystamy wzór Ito dla funkcji $f(t,x) = \frac{1}{x}$. \\
+Mamy: $f_t(t,x) = 0$, $f_x(t,x) = -\frac{1}{x^2}$, $f_{xx}(t,x)= \frac{2}{x^3}$
+\begin{equation*}
+df(t,S_t) = (f_t(t,S_t)+\mu S_t f_x(t,S_t)+\frac{\sigma^2}{2}S_t^2 f_{xx}(t,x))dt + \sigma S_t dW_t
+\end{equation*}
+
+\begin{equation*}
+d\frac{1}{S_t} = (-\mu + \sigma^2)\frac{1}{S_t}dt - \sigma \frac{1}{S_t} dW_t.
+\end{equation*}
+
+
+\end{proof}
+ 
+\section{Proces Wienera} 
+
+
+W rozdziale 4, gdy będziemy się zajmować opcjami barierowymi istotny będzie dla nas rozkład łączny
+$\left(\max\limits_{0 \le t \le T} W_T, W_T\right)$.
+Przyjmijmy oznaczenie $ M_T := \max\limits_{0 \le s \le T} \{ W_s \}  $.  \\
+
+\begin{stw} (Rozkład łączny $(M_T, W_T)$) \\
+Niech
+\begin{equation*}
+h(m,b) = (2m-b)e^{-\frac{1}{2T}(2m-b)^2}\mathbbm{1}_{ \{ 0<m, b<m \} },
+\end{equation*}
+wówczas gęstość rozkładu łącznego $(M_T, W_T)$ w punkcie $(m,b)$ jest równa $\frac{2}{T\sqrt{2\pi T}}h(m,b)$.
+
+\end{stw}
+\begin{proof}
+Dowód jest zawarty w sekcji 1.6 pozycji \cite{Bro}.
+\end{proof}	
+
+W oparciu o twierdzenie Girsanova możemy rozszerzyć Stwierdzenie 1.4 na procesy z dryfem.
+\begin{stw}
+Niech $ B_T = \theta t + W_T $, $M_T = \max\limits_{0 \le s \le T} \{ B_s \} $ a $W_T$ będzie procesem Wienera względem miary $\mathbb{P}$, ponadto niech:
+$$ g(m,b) = (2m-b)e^{-\frac{1}{2T}(2m-b)^2}e^{\theta b-\frac{T\theta^2}{2}}\mathbbm{1}_{ \{ 0<m, b<m \}}, $$
+wówczas $(M_T,B_T)$ ma rozkład (względem $\mathbb{P}$) o gęstości danej wzorem:
+\begin{equation*}
+\frac{2}{T\sqrt{2\pi T}}g(m,b).
+\end{equation*}
+
+\end{stw}
+
+
+
+%----------------OPCJE BINARNE----------------------------------------------------------------
+%------------PAMIĘTAĆ O AKTUALIZACJI----------------------------------------------------------
+%----------MODEL DWUMIANOWY-----------------------------------------------------
+
+
+
+\chapter{Symetrie w modelu dwumianowym}
+Zacznijmy od zdefiniowania przestrzeni probablistycznej. Niech $T \in \mathbb{Z}_{+}$ oraz:
+
+
+$$\Omega := \{\omega_1 , \omega_2 \}^{T} $$ 
+Co oznacza że zdarzenia elementarne są ciągami (długości $T$) o wyrazach ze zboru $\{\omega_1, \omega_2 \} $. \\
+Dla $\omega \in \Omega$ przez $\pi_n(\omega) $ będziemy oznaczali rzut $\omega$ na $n$-tą współrzędną. \\
+Określimy teraz ciąg zmiennych losowych $\{ S_t \}_{t=0,1,...,T}$ w następujący sposób (dla $\omega \in \Omega $ ): 
+\begin{itemize}
+\item $ S_0 \in \mathbb{R}_{>0} $
+\item $\pi_t(\omega) = \omega_1 \Rightarrow S_t(\omega) = S_{t-1}(\omega)u$, dla $t>0$ 
+\item $\pi_t(\omega) = \omega_2 \Rightarrow S_t(\omega) = S_{t-1}(\omega)d$, dla $t>0$ 
+\end{itemize}
+
+Określamy filtrację $\mathscr{F}:= \{ \mathscr{F}_t \}_{t=0,...,T}$
+              $$\mathscr{F}_t = \sigma (S_0,S_1,...,S_t) $$
+              
+              
+Określamy fizyczną miarę prawdopodobieństwa $\mathbb{P}$:
+$$\mathbb{P}(\omega) := p^{m(\omega)}(1-p)^{T-m(\omega)}  $$
+ gdzie: \\
+$p >0$, \\
+$m(\omega)$ - liczba tych wyrazów w ciągu $\omega$ które są równe $\omega_1$.               
+
+\section*{Model dwumianowy - T-kroków}
+
+
+
+Rozważamy dwie waluty $\mho$ oraz $\diamondsuit$ przy założeniach:   \\
+1) waluta $\mho$ rośnie bez ryzyka według stopy wzrostu $q$  \\
+2) waluta $\diamondsuit$ rośnie bez ryzyka według stopy wzrostu stopy $r$  \\
+3) w momencie $t=0,1,...,T$ kurs waluty $\mho$ wyrażony w $\diamondsuit$ wynosi $S_t$. \\
+
+
+
+Niech $H_T$ będzie zmienną losową $\mathscr{F}_T$-mierzalną, \\
+$C^{\diamondsuit}(H_T)$ oznacza cenę (w jednostkach $\diamondsuit$) w chwili $0$ opcji, która w chwili $T$ wypłaca $H_T$ jednostek $\diamondsuit$. Analogicznie definiujemy $C^{\mho}(H_T)$.
+
+\section{Dwa modele}
+W zależności od tego którą walutę wybierzemy jako podstawę naszych obliczeń możemy dokonać wyceny używając jednego z dwóch modeli: \\
+$M(\diamondsuit) := \left[ (1+q)^t S_t, \, (1+r)^t \right]$, \\
+ $M(\mho) := \left[ (1+r)^t S^{-1}_t, \, (1+q)^t \right]$
+
+\vspace{0.3cm} 
+Modelom tym odpowiadają miary martyngałowe: \\
+$Q^{\diamondsuit} = (\tilde{p}_{\diamondsuit},1-\tilde{p}_{\diamondsuit})$, $Q^{\mho} = (1-\tilde{p}_{\mho}, \tilde{p}_{\mho})$. 
+\begin{stw} Prawdopodobieństwa martyngałowe wyrażają się następującymi wzorami:
+\begin{equation*}
+\tilde{p}_{\diamondsuit} = \frac{\frac{1+r}{1+q}-d}{u-d}, \hspace{1cm}
+1 - \tilde{p}_{\diamondsuit} =  \frac{u-\frac{1+r}{1+q}}{u-d}
+\end{equation*}
+
+\begin{equation*} 
+\tilde{p}_{\mho} =  \frac{\frac{1+q}{1+r} - 1/u}{1/d-1/u}, \hspace{1cm}   
+ 1-\tilde{p}_{\mho} = \frac{1/d - \frac{1+q}{1+r}}{1/d-1/u}
+ \end{equation*}
+
+\end{stw}
+
+\begin{proof} $ $ \\
+Wychodzimy od warunku:
+\begin{equation*}
+\mathbb{E}^{\mathbb{Q}^{\diamondsuit}} \left( \left(\frac{1+q}{1+r} \right)^{t+1}S_{t+1} \middle| \mathscr{F}_t \right) = \left( \frac{1+q}{1+r} \right)^t S_t
+\end{equation*}
+Otrzymujemy:
+\begin{equation*}
+u p_{\diamondsuit} + d(1 - p_{\diamondsuit}) = \frac{1+r}{1+q}
+\end{equation*}
+Analogicznie dla $\mathbb{Q}^{\mho} $:
+\begin{equation*}
+\frac{1}{d}p_{\mho} + \frac{1}{u}(1-p_{\mho}) = \frac{1+q}{1+r}.
+\end{equation*}
+
+
+\end{proof}
+
+
+\begin{wn}
+Pomiędzy miarami martyngałowymi $(\tilde{p}_{\diamondsuit},1-\tilde{p}_{\diamondsuit})$ oraz \\ $(1-\tilde{p}_{\mho},\tilde{p}_{\mho})$ zachodzą związki:
+\begin{equation}
+\begin{split}
+\frac{1}{1+q}\tilde{p}_{\mho} = \frac{1}{1+r}(1-\tilde{p}_{\diamondsuit}) u \\
+\frac{1}{1+r}(1-\tilde{p}_{\mho}) = \frac{1}{1+r}\tilde{p}_{\diamondsuit} d
+\end{split}
+\end{equation}
+\end{wn}
+
+\begin{proof} $ $
+\begin{multline*}
+\begin{split}
+\tilde{p}_{\mho} = & \frac{(1+r)\frac{1}{d}-(1+q)}{(1+r)(\frac{1}{d}-\frac{1}{u})} =
+ \frac{(1+r)u-(1+q)ud}{(1+r)(u-d)} = \frac{1+q}{1+r}(1-\tilde{p}_{\diamondsuit}) u   \\ 
+1 - \tilde{p}_{\mho} = & \frac{(1+q)-(1+r)\frac{1}{u}}{(1+r)(\frac{1}{d}-\frac{1}{u})} = \frac{1+q}{1+r}\tilde{p}_{\diamondsuit} d 
+\end{split}
+\end{multline*}
+\end{proof}
+
+\begin{stw} Niech $H_T$ będzie funkcją $\mathscr{F}_T$-mierzalną, wówczas zachodzi równość:
+\begin{equation*}
+C^{\diamondsuit}\left( H_T\right)  = S_0 C^{\mho}\left( \frac{H_T}{S_T}\right). 
+\end{equation*}
+\end{stw}
+
+\begin{proof}
+\begin{multline*}
+S_0 C^{\mho}\left( \frac{H_T}{S_T} \right) = S_0 \frac{1}{(1+q)^T} \mathbb{E}^{\mathbb{Q}^{\mho}} \left( \frac{H_T}{S_T} \right) = S_0 \frac{1}{(1+q)^T} \sum_{k=0}^{T} {{T}\choose{k}} \tilde{p}_{\mho}^{k} (1-\tilde{p}_{\mho})^{T-k} \frac{H_T(k)}{S_T(k)} = \\ =\frac{1}{(1+r)^T} \sum_{k=0}^{T} {{T}\choose{k}} \tilde{p}_{\diamondsuit}^{T-k} (1-\tilde{p}_{\diamondsuit})^{k} \underbrace{S_0 u^{k} d^{T-k}}_{S_T(k)} \frac{H_T(k)}{S_T(k)} = C^{\diamondsuit}(H_T)
+\end{multline*}
+\end{proof}
+
+
+\begin{koment}
+Stwierdzenie to uzasadnia że opcję walutową wypłacającą $H_T$ jednostek $\mho$ można wycenić zarówno w $M(\mho)$, jak i w $M(\diamondsuit)$, pamiętając o tym że w chwili $T$ jednostka $\mho$ jest warta $S_T$ jednostek $\diamondsuit$.
+\end{koment} 
+ 
+%REPLIKACJA---------------------------------- 
+\begin{chapter}{Symetrie walutowe}
+Rozważmy rynek na którym odbywa się handel dwiema walutami $\mho$ oraz $\diamondsuit$.
+Stopa wolna od ryzyka wynosi $q$ dla $\mho$ oraz $r$ dla $\diamondsuit$. \\
+Kurs waluty $\mho$ wyrażony $\diamondsuit$ spełnia względem miary fizycznej równanie:
+\begin{equation*}
+dS_t = S_t(\mu dt + \sigma dW_t)
+\end{equation*}
+
+
+\begin{section}{Dwa modele}
+Przedstawimy teraz dwa modele służące do wyceny opcji walutowych, różnią się od siebie tym która waluta pełni rolę numeraire. \\
+
+1) Model $M(\diamondsuit) = [e^{qt} S_t, e^{rt}]$ złożony z dwóch instrumentów finansowych:
+\begin{itemize}
+\item instrumentu ryzykownego $e^{qt}S_t$,
+\item depozytu bankowego $B_t^{\diamondsuit} = e^{rt}$
+\end{itemize}
+
+
+
+Do wyceny w $M(\diamondsuit)$ stosujemy miarę martyngałową $\mathbb{Q}^{\diamondsuit}$ względem której martyngałem jest $e^{(q-r)t}S_t$.
+Cena opcji wypłacającej $H_T$ jednostek $\diamondsuit$ (w chwili 0) wynikająca z założenia o braku arbitrażu w $M(\diamondsuit)$ jest równa:
+\begin{equation*}
+C^{\diamondsuit}(H_T) = e^{-rT}\mathbb{E}^{\mathbb{Q}^{\diamondsuit}}H_T
+\end{equation*} 
+
+2) Model $M(\mho) = [e^{rt}S_t^{-1}, e^{qt}]$ również składający się z dwóch instrumentów:
+\begin{itemize}
+\item instrumentu ryzykownego o cenie $e^{rt}S_t^{-1}$,
+\item depozytu bankowego $B_t^{\mho} = e^{qt}$
+\end{itemize}
+
+Równanie dla $S_t^{-1}$ otrzymujemy jak w rozdziale 2.
+
+Wycenę opieramy o miarę $\mathbb{Q}^{\mho}$ względem której martyngałem jest $e^{(r-q)t} S^{-1}_t$.
+Cena opcji wypłacającej $G_T$ jednostek $\mho$ wyraża się wzorem:
+\begin{equation*}
+C^{\mho}(G_T) = e^{-qT}\mathbb{E}^{\mathbb{Q}^{\mho}}G_T,
+\end{equation*}
+gdzie o $G_T$ zakładamy że jest $\mathscr{F}_T$-mierzalną zmienną losową. 
+
+
+\begin{tw}Niech $H_T$ będzie funkcją $\mathscr{F}_T$ mierzalną, wówczas:
+
+\begin{equation*}
+C^{\diamondsuit}(H_T) = S_0 C^{\mho}\left(\frac{H_T}{S_T} \right).
+\end{equation*}
+\end{tw}
+\begin{proof}
+Względem $\mathbb{Q}^{\diamondsuit}$ zachodzi:
+\begin{equation*}
+dS_t = S_t \left( \left(r-q \right)dt + \sigma dW^{\diamondsuit}_t \right)
+\end{equation*}
+stąd (patrz sekcja 1.4):
+\begin{equation*}
+dS^{-1}_t = S^{-1}_t \left( \left(q-r + \sigma^2 \right)dt - \sigma dW^{\diamondsuit}_t \right)
+\end{equation*}
+
+Względem $\mathbb{Q}^{\mho}$ zachodzi:
+\begin{equation*}
+dS^{-1}_t = S^{-1}_t \left( \left(q-r \right)dt + \sigma dW^{\mho}_t \right)
+\end{equation*}
+
+Przez porównanie prawych stron ostatnich dwóch równości otrzymujemy:
+\begin{equation*}
+\sigma dt - dW^{\diamondsuit}_t = dW^{\mho}_t.
+\end{equation*}
+
+Z twierdzenia Girsanova:
+$ \frac{dQ^{\mho}}{dQ^{\diamondsuit}} = e^{\sigma W^{\diamondsuit}_T-\frac{\sigma^2}{2}T}.$
+
+Kładziemy 
+$Z_s = \mathbb{E}^{\mathbb{Q}^{\diamondsuit}} \left( e^{\sigma W^{\diamondsuit}_T-\frac{\sigma^2}{2}T} \middle| \mathscr{F}_s \right) $ jednakże jak wiadomo $e^{\sigma W^{\diamondsuit}_T-\frac{\sigma^2}{2}T}$ jest martyngałem względem $\mathbb{Q}^{\diamondsuit}$, więc: 
+\begin{equation*}
+Z_s = e^{\sigma W^{\diamondsuit}_s-\frac{\sigma^2}{2}s} = S^{-1}_0 S_s e^{(q-r)s},
+\end{equation*}
+w szczególności $Z_0=1$.
+
+Jesteśmy już gotowi by zastosować abstrakcyjny wzór Bayesa:
+\begin{equation*}
+\mathbb{E}^{Q^{\mho}} \frac{H_T}{S_T} = \frac{1}{Z_0}\mathbb{E}^{Q^{\diamondsuit}} \frac{H_T}{S_T} Z_T =  \mathbb{E}^{Q^{\diamondsuit}} \frac{H_T}{S_T} S^{-1}_0 S_T e^{(q-r)T} = e^{qT}e^{-rT}S^{-1}_0 \mathbb{E}^{Q^{\diamondsuit}} H_T.
+\end{equation*}
+
+
+
+
+\end{proof}
+
+\begin{koment}
+Rozważmy opcję walutową o wypłacie $H_T$ jednostek $\diamondsuit$ w momencie $T$. Możemy wycenić ją na dwa sposoby: bezpośrednio za pomocą modelu $M(\diamondsuit)$ lub pośrednio przez wycenienie równoważnej opcji wypłacającej $\frac{H_T}{S_T}$ jednostek $\mho$ używając przy tym do wyceny modelu $M(\mho)$.  
+\end{koment}
+
+\end{section}
+
+\begin{section}{Replikacja opcji walutowych}
+Niech $H_T$ będzie funkcją $\mathscr{F}_T$ mierzalną. Rozważmy opcję wypłacającą $H_T$ jednostek waluty $\diamondsuit$ (lub równoważnie $\frac{H_T}{S_T}$ jednostek $\mho$) w chwili $T$.
+Do jej replikacji posłużymy się depozytami bankowymi w obu walutach które będziemy oznaczać przez $B^{\diamondsuit}_t$ oraz $B^{\mho}_t$.
+W chwili $t$:
+\begin{itemize}
+\item $B^{\mho}_t$ to $e^{qt}$ jednostek $\mho$,
+\item $B^{\diamondsuit}_t$ to $e^{rt}$ jednostek $\diamondsuit$
+\end{itemize}
+Łatwo widać że oba instrumenty w chwili $0$ są warte odpowiednio jedną jednostkę odpowiednio $\mho$ i $\diamondsuit$.
+ 
+ Wprowadźmy oznaczenie $V_t^{\diamondsuit}[\alpha, \beta]$ na wartość portfela składającego się z $\alpha B^{\mho}_t$ oraz $\beta B^{\diamondsuit}_t$ wyrażoną w jednostkach $\diamondsuit:$
+ $$V_t^{\diamondsuit}[\alpha, \beta] = \alpha e^{qt} S_t +\beta e^{rt}.$$ 
+ Przez $V_t^{\mho}[\alpha, \beta]$ oznaczymy wartość tego samego portfela tyle że w jednostkach $\mho$: 
+$$V_t^{\mho}[\alpha, \beta] = \alpha e^{qt} +\beta e^{rt}S^{-1}_T.$$
+Oczywiście 
+\begin{equation*}
+V_t^{\diamondsuit}[\alpha, \beta] = S_t V_t^{\mho}[\alpha, \beta].
+\end{equation*}
+
+
+\begin{stw} To czy strategia jest samofinansująca nie zależy od waluty w której wyceniamy portfel:
+\begin{equation*}
+dV_t^{\diamondsuit}[\phi_t, \psi_t] = \phi_t d(e^{qt}S_t) + \psi_t d(e^{rt}) \Leftrightarrow dV_t^{\mho}[\phi_t, \psi_t] = \phi_t d(e^{qt}) + \psi_t d(e^{rt}S_t^{-1})
+\end{equation*}
+\end{stw}
+\begin{proof}
+Pokażemy implikację ($\Rightarrow$).
+Rozpiszmy założenie:
+\begin{equation*}
+dV_t^{\diamondsuit}[\phi_t, \psi_t] = \phi_t d(e^{qt}S_t) + \psi_t d(e^{rt}) = \phi_t S_t e^{qt} \left( (q+\mu)dt + \sigma d W_t \right) + \psi_t re^{rt}dt
+\end{equation*}
+
+Zgodnie z regułą mnożenia dla różniczki iloczynu procesów stochastycznych (stwierdzenie 1.1) zachodzi:
+\begin{equation*}
+dV_t^{\mho}[\phi_t, \psi_t] = d(S^{-1}_t V_t^{\diamondsuit}[\phi_t, \psi_t]) = S^{-1}_t dV_t^{\diamondsuit}[\phi_t, \psi_t] + V_t^{\diamondsuit}[\phi_t, \psi_t] d S^{-1}_t + (-\sigma S_t^{-1}) (\phi_t \sigma S_t e^{qt})dt
+\end{equation*}
+
+
+
+
+\begin{equation*}
+\begin{split}
+S^{-1}_t dV_t^{\diamondsuit}[\phi_t, \psi_t] = & \hspace{0.2cm}  \phi_t e^{qt} \left( (q+\mu)dt + \sigma d W_t \right) + S^{-1}_t \psi_t re^{rt}dt  \\
+V_t^{\diamondsuit}[\phi_t, \psi_t] d S^{-1}_t = & \hspace{0.2cm} (\phi_t e^{qt} + \psi_t S^{-1}_t e^{rt}) \left( (-\mu+\sigma^2)dt - \sigma dW_t \right) \\
+-\sigma S_t^{-1} \phi_t \sigma S_t e^{qt}dt = & - \phi_t \sigma^2 e^{qt}dt 
+\end{split}
+\end{equation*}
+Dodając powyższe trzy równości stronami otrzymujemy:
+\begin{equation*}
+\begin{split}
+dV_t^{\mho}[\phi_t, \psi_t] = & \phi_t qe^{qt}dt + \psi_t S^{-1}_t e^{rt} \left( (r - \mu + \sigma^2)dt - \sigma dW_t \right) \\ = & d(e^{qt}) + d(e^{rt} S^{-1}_t) 
+\end{split}
+\end{equation*}
+
+
+\end{proof}
+
+
+\end{section}
+Przedstawimy teraz alternatywny dowód twierdzenia 3.1, wykorzystamy przy tym poprzednie stwierdzenie odnośnie strategii samofinansujących. \\
+\begin{proof}
+Rozważmy opcję wypłacającą $H_T$ jednostek $\diamondsuit$ w modelu $M(\diamondsuit)$, dzięki twierdzeniu o reprezentacji otrzymujemy samofinansującą strategię $(\phi, \psi)$ taką że:
+\begin{equation*}
+\phi_T e^{qT}S_T + \psi_T e^{rT} = H_T
+\end{equation*} 
+\begin{equation*}
+C^{\diamondsuit}(H_T) = \phi_0 S_0 + \psi_0 
+\end{equation*}
+
+Możemy tę samą opcję (czyli $\frac{H_T}{S_T}$ po przewalutowaniu) zreplikować w modelu $M(\mho)$ otrzymując z tw. o reprezentacji samofinansującą strategię $(\tilde{\phi}, \tilde{\psi})$ taką że:
+\begin{equation*}
+\frac{H_T}{S_T} = \tilde{\phi}_T e^{qT} + \tilde{\psi}_T e^{rT}S^{-1}_T  
+\end{equation*}
+wtedy
+\begin{equation*}
+C^{\mho} \left( \frac{H_T}{S_T} \right) = \tilde{\phi}_0 + \tilde{\psi}_0 S^{-1}_0.
+\end{equation*}
+
+
+Na mocy stwierdzenia 3.1 o strategiach samofinansujących $(\phi, \psi)$ jest strategią samofinansującą również w $M(\mho)$; jej wypłata to:
+\begin{equation*}
+\phi_T e^{qT} + \psi_T e^{rT} S^{-1}_T = S^{-1}_T H_T
+\end{equation*}
+
+Czyli (po przewalutowaniu według kursy $S_T$) taka sama jak dla strategii $(\tilde{\phi}, \tilde{\psi})$. Skoro ich wypłaty są równe to również muszą być ich ceny w chwili $0$:
+\begin{equation*}
+C^{\mho}\left( \frac{H_T}{S_T} \right) = \tilde{\phi}_0 + \tilde{\psi}_0S^{-1}_0 = \phi_0 + \psi_0 S^{-1}_0 = S^{-1}_0 C^{\diamondsuit}(H_T) 
+\end{equation*}
+\end{proof}
+
+\end{chapter}
+
+%BINARNE--------------------------------------------------
+
+
+\chapter{Opcje binarne}
+W tym rozdziale zajmujemy się wyceną barierowych opcji binarnych.    
+Dla wygody wprowadzimy oznaczenia, których będziemy się potem trzymać przez cały rozdział:
+\begin{itemize}
+\item $K$ będzie to cena realizacji opcji
+\item $H$ będzie barierą opcji barierowej
+\item $\tilde{K} := \frac{1}{\sigma}\ln\frac{K}{S_0} $
+\item $\tilde{H} := \frac{1}{\sigma}\ln\frac{H}{S_0} $
+\item $\Phi $ - dystrybuanta standardowego rozkładu normalnego
+\item $m_t := \min\limits_{0 \le t \le T} S_t $
+\item $M_t := \max\limits_{0 \le t \le T} S_t$
+\end{itemize}
+
+\begin{df} Opcja binarna typu gotówka albo nic
+to opcja o wypłacie $\mathbbm{1}_{ \{ X_T \in A  \} }$, gdzie $A$ jest zbiorem borelowskim, a $X_T$ funkcją $\mathscr{F}_T$-mierzalną.
+\end{df}
+
+\begin{df} Opcja binarna typu aktywo albo nic
+to opcja o wypłacie $S_T\mathbbm{1}_{ \{ X_T \in A  \} }$, gdzie $A$ jest zbiorem borelowskim, $X_T$ funkcją $\mathscr{F}_T$-mierzalną a $\{ S_t \}_{0 \le t \le T}$ jest $\mathscr{F}$-adaptowanym procesem cen aktywa ryzykownego.
+\end{df}
+
+\begin{df}
+Ze względu na funkcje wypłat w czasie $T$ wyróżniamy następujące barierowe opcje binarne:
+\begin{itemize}
+\item $\mathbbm{1}_{\{ m_T < H, S_T < K \} }$ -- down-in put
+\item $\mathbbm{1}_{\{ m_T < H, S_T < K \} }$ -- down-in put
+\item $\mathbbm{1}_{\{ m_T < H, S_T > K \} }$ -- down-in call
+\item $\mathbbm{1}_{\{ m_T > H, S_T < K \} }$ -- down-out put
+\item $\mathbbm{1}_{\{ m_T > H, S_T > K \}}$ -- down-out call
+\item $\mathbbm{1}_{\{ M_T > H, S_T > K \}}$ -- up-in put
+\item $\mathbbm{1}_{\{ M_T > H, S_T > K \}}$ -- up-in call
+\item $\mathbbm{1}_{\{ M_T < H, S_T > K \}}$ -- up-out put
+\item $\mathbbm{1}_{\{ M_T < H, S_T > K \}}$ -- up-out call   
+\end{itemize}
+\end{df}
+
+\section{Podstawowe opcje typu gotówka albo nic}
+Ten podrozdział zawiera wyprowadzenie wzorów na ceny wybranych trzech opcji. W dalszej części pracy przy użyciu prostych równości oraz symetrii zostaną w oparciu o nie wyprowadzone wzory na ceny pozostałych opcji binarnych.
+
+W stwierdzeniach 4.1-4.5 przyjmujemy następujące założenia:
+\begin{itemize}
+\item $S_t$ jest ceną instrumentu ryzykownego nie wypłacającego dywidendy
+\item $ dS_t = S_t \left(r dt + \sigma dW_t  \right) $, $W_t$ jest procesem Wienera względem miary martyngałowej $\mathbb{Q}$
+\item stopa wolna od ryzyka wynosi $r$
+\end{itemize}
+
+Do wyceny wykorzystujemy model rynku $[S_t,e^{rt}]$.
+
+% ---------- S < K -------------------------------------------
+\begin{stw} Cena binarnej opcji put typu gotówka albo nic wyraża się wzorem:
+\begin{equation*}
+C\left( \mathbbm{1}_{ \{ S_T<K \} } \right) =  e^{-rT}\Phi \Scale[1.0]{  \left( \frac{ \tilde{K} - \theta T}{\sqrt{T}} \right) }
+\end{equation*} gdzie $\theta = \frac{r}{\sigma} - \frac{\sigma}{2}.$
+\end{stw}
+
+
+
+\begin{proof}
+Zachodzą następujące równości:
+\begin{equation*}	
+	\{ S(T) < K \} = \Scale[0.9]{\Big\{ (r - \frac{\sigma^2}{2})T + \sigma W_T < \ln \frac{K}{S_0} \Big\} = \{ W_T < \tilde{K} - \theta T \}}
+\end{equation*}	
+stąd:
+\begin{equation*}
+C\left (\mathbbm{1}_{ \{ S_T<K \} } \right) = e^{-rT}\mathbb{E}^{\mathbb{Q}} \, \mathbbm{1}_{ \{ S_T<K \} } = e^{-rT}\mathbb{Q}(S_T < K) = e^{-rT}\mathbb{Q}(W_T < \tilde{K} - \theta T)
+\end{equation*}
+Teraz wykorzystujemy fakt że $W_T$ ma rozkład normalny o parametrach $(0,\sqrt{T})$.
+
+\end{proof}
+% ------------------------------------------------------------
+
+% --------- M < H --------------------------------------------
+\begin{stw} Jeśli $H \ge 0$ to cena barierowej opcji binarnej o wypłacie $\mathbbm{1}_{ \{ M_T<H \} }$ wyraża się wzorem:
+\begin{equation*}
+C\left( \mathbbm{1}_{ \{ M_T<H \} } \right) = e^{-rT}\Scale[1.0]{\left(\Phi\left(\frac{ \tilde{H}-\theta T }{\sqrt{T}} \right) - e^{2\tilde{H}\theta}\Phi\left(\frac{ -\tilde{H}-\theta T }{\sqrt{T}} \right) \right) }
+\end{equation*}
+\end{stw}
+gdzie: $\theta = \frac{r}{\sigma} - \frac{\sigma}{2}.  $ 
+
+\begin{proof}
+Niech $\frac{2}{T\sqrt{2\pi T}} g(m,b)$ będzie gęstością rozkładu łącznego $(M_T,S_T)$ (patrz sekcja 1.5), wtedy:
+\vspace{1cm}
+\begin{equation*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}}\left( \mathbbm{1}_{ \{ M_T<H \} } \right) = & \int_{-\infty}^{\tilde{H}} \int_{-\infty}^{\infty} \frac{2}{T\sqrt{2\pi T}}\, g \,db\,dm = \\ = & \int_{0}^{\tilde{H}} \underbrace{ \frac{2}{T\sqrt{2\pi T}} \int_{-\infty}^{m} g \,db}_{I(m)}\,dm.
+\end{split}
+\end{equation*}
+
+Przydatna w naszych rachunkach będzie następująca prosta równość:
+\begin{equation*}
+\frac{1}{\sigma \sqrt{2\pi}}\int_{a}^{b} e^{-\frac{1}{2\sigma^2}(m - \mu )^2} \,dm = \Phi\Scale[1.0]{\left(\frac{b-\mu}{\sigma}\right)}-\Phi\Scale[1.0]{\left(\frac{a-\mu}{\sigma}\right)}.
+\end{equation*}
+
+
+
+
+%-------------CAŁKA DO M----------------------------------
+\vspace{1cm}
+Teraz w $I(m)$, dzięki zamianie zmiennych ($b_1:=b-2m$) otrzymujemy $$I(m) = \frac{2}{T\sqrt{2\pi T}} \int_{-\infty}^{-m}-b_1e^{-\frac{1}{2T}b_1^2}e^{\theta (b_1+2m)-\frac{T\theta^2}{2}}\,db_1.$$
+Następnie przedstawiamy wykładnik funkcji wykładniczej w postaci kanonicznej (kwadrat + stała):
+
+\begin{multline*}
+\begin{split}
+\qquad \qquad \qquad \qquad I(m) = & \frac{2}{T\sqrt{2\pi T}}e^{2\theta m}\int_{-\infty}^{-m}-be^{-\frac{1}{2T}b^2+\theta b-\frac{T\theta^2}{2}}\,db = \\ = & \frac{2}{T\sqrt{2\pi T}}e^{2\theta m}\int_{-\infty}^{-m}-be^{-\frac{1}{2T}(b-\theta T)^2}\,db.
+\end{split}
+\end{multline*}
+
+
+
+Rozbijamy na dwie całki:
+\begin{multline*}
+\begin{split}
+& \frac{2}{T\sqrt{2\pi T}} \int_{-\infty}^{-m}-be^{-\frac{1}{2T}(b - T\theta )^2}\,db = \\ & = \underbrace{ \frac{2}{T\sqrt{2\pi T}} \int_{-\infty}^{-m}-(b-\theta T)e^{-\frac{1}{2T}(b - T\theta )^2}\,db}_{I_1(m)} - 2\theta \underbrace{ \frac{1}{\sqrt{2\pi T}} \int_{-\infty}^{-m} e^{-\frac{1}{2T}(b - T\theta )^2}\,db}_{\Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}}.
+\end{split}
+\end{multline*}
+\vspace{0,2cm}
+
+Liczymy $I_1(m)$, otrzymujac::
+%------------------I1------------------------------------------------------------------
+\begin{equation*}
+\begin{split}
+ I_1(m) = & \frac{2}{T\sqrt{2\pi T}} \int_{-\infty}^{-m}-(b-\theta T)e^{-\frac{1}{2T}(b - T\theta )^2}\,db = \\ = & \frac{2}{\sqrt{2\pi T}} e^{-\frac{1}{2T}(b-\theta T)^2} \bigg|_{-\infty}^{-m} = \frac{2}{\sqrt{2\pi T}} e^{-\frac{1}{2T}(m+\theta T)^2} 
+\end{split}
+\end{equation*}
+
+%----------------------------------------------------------------------------------------
+Nasze przekształcenia skutkują w następującej postaci $I(m)$:
+\begin{multline*}
+\begin{split}
+ I(m) = & e^{2m\theta}\left( I_1(m)-2\theta \Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)} \right) = \\ = &  e^{2m\theta}\left(\frac{2}{\sqrt{2\pi T}} e^{-\frac{1}{2T}(m+\theta T)^2} - 2\theta \Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}\right) = \\ = & \frac{2}{\sqrt{2\pi T}} e^{-\frac{1}{2T}(m-\theta T)^2} - 2\theta e^{2m\theta} \Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}
+\end{split} 
+ \end{multline*}
+
+\vspace{0,2cm}
+%------------------POWRÓT DO J-----------------------------------------------------------
+Wracamy teraz do naszej wyjściowej całki:
+\begin{equation*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}}\left( \mathbbm{1}_{ \{ M_T<H \} } \right) = & \int_{0}^{\tilde{H}} I(m) \,dm = \\ = & 2\Bigg( \int_{0}^{\tilde{H}}\frac{1}{\sqrt{2\pi T}} e^{-\frac{1}{2T}(m-\theta T)^2}\,dm - \underbrace{ \int_{0}^{\tilde{H}}\theta e^{2m\theta} \Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}\,dm 
+}_{J_1(\tilde{H})} \Bigg)  
+\end{split}
+\end{equation*}
+
+\vspace{0,5cm}
+
+%----------------J1------------------------
+Ostatnią całkę obliczymy całkując przez części:
+\begin{multline*}
+\begin{split}
+J_1(\tilde{H}) & = \int_{0}^{\tilde{H}} \theta  e^{2m\theta} \Phi \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)} \,dm = \\ & = \frac{1}{2}e^{2m\theta} \Phi \Scale[1.0]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)} |_{0}^{\tilde{H}} \, + \, \underbrace{\frac{1}{2\sqrt{T}} \int_{0}^{\tilde{H}}e^{2m\theta}\Phi^{'} \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}\,dm }_{J_2(\tilde{H})}
+\end{split}
+\end{multline*}
+
+%---------ZNOWU NA DWIE CAŁKI----------
+
+\begin{multline*}
+\begin{split}
+J_2(\tilde{H}) = & \frac{1}{2\sqrt{T}}\int_{0}^{\tilde{H}}e^{2m\theta}\Phi^{'} \Scale[0.8]{\left(\frac{-m-T\theta}{\sqrt{T}}\right)}\,dm = \frac{1}{2\sqrt{T}} \int_{0}^{\tilde{H}} e^{2m\theta} \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2T}(m + T\theta )^2} \,dm = \\ = & \frac{1}{2\sqrt{2 \pi T}} \int_{0}^{\tilde{H}} e^{-\frac{1}{2T}(m - T\theta )^2} \,dm = \frac{1}{2} \Phi \Scale[0.8]{\left(\frac{\tilde{H}-T\theta}{\sqrt{T}}\right)} - \frac{1}{2} \Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)}
+\end{split}
+\end{multline*}
+
+%------------------TEST OZNACZEN------------
+
+
+i w konsekwencji:
+\begin{equation*}
+\begin{split}
+J_1(\tilde{H}) = & \frac{1}{2}e^{2\tilde{H}\theta}\Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)} - \frac{1}{2}\Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)} + \underbrace{\left(\frac{1}{2} \Phi \Scale[0.8]{\left(\frac{\tilde{H}-T\theta}{\sqrt{T}}\right)} - \frac{1}{2} \Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)}\right)}_{J_2(\tilde{H})} = \\ = &  \frac{1}{2}e^{2\tilde{H}\theta}\Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)} + \frac{1}{2} \Phi \Scale[0.8]{\left(\frac{\tilde{H}-T\theta}{\sqrt{T}}\right)} - \Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)}
+\end{split}
+\end{equation*}
+
+
+Ostatecznie:
+\begin{multline*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}}\left(\mathbbm{1}_{ \{ M_T<H \} } \right) = & \, 2\left(  \Phi \Scale[0.8]{\left(\frac{\tilde{H}-T\theta}{\sqrt{T}}\right)} - \Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)} - \frac{1}{2}e^{2\tilde{H}\theta}\Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)} - \frac{1}{2} \Phi \Scale[0.8]{\left(\frac{\tilde{H}+T\theta}{\sqrt{T}}\right)} + \Phi \Scale[0.8]{\left(\frac{-T\theta}{\sqrt{T}}\right)} \right) = \\ = &
+\Scale[1.0]{\Phi\left(\frac{ \tilde{H}-\theta T }{\sqrt{T}} \right) - e^{2\tilde{H}\theta}\Phi\left(\frac{ -\tilde{H}-\theta T }{\sqrt{T}} \right) }
+\end{split}
+\end{multline*}
+
+
+\end{proof}
+%-------------------------------------------------------------
+
+
+% --------- M < H, S < K --------------------------------------------
+\begin{stw} Jeśli $H > K$ oraz $H > 0$ to cena barierowej opcji binarnej up-out put wyraża się wzorem:
+\begin{equation*}
+C\left( \mathbbm{1}_{ \{ M_T < H, \, S_T < K \} } \right) = e^{-rT}\left( \Phi \Scale[0.8]{\left(\frac{\tilde{K}-T\theta}{\sqrt{T}}\right)} - e^{2 \theta \tilde{H}} \Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)} \right)
+\end{equation*}
+\end{stw}
+gdzie:  $\theta = \frac{r}{\sigma} - \frac{\sigma}{2}.  $
+%-----------DOWÓD--------------------------------------------
+\begin{proof}
+Jeśli $K \ge H $ to drugi warunek ograniczający nic nie wnosi. Mamy $\mathbbm{1}_{ \{ M_T < H, \, S_T < K \} } = \mathbbm{1}_{ \{ M_T < H \} }$ i możemy skorzystać ze wzoru z poprzedniego stwierdzenia. To tłumaczy nasze założenie $ K < H $.
+
+
+\begin{multline*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}}\left(\mathbbm{1}_{ \{ M_T < H, \, S_T < K \} } \right) = & \int_{-\infty}^{\tilde{H}}\int_{-\infty}^{\tilde{K}} \frac{2}{T\sqrt{2\pi T}} \, g \, db \, dm = \\ = & \int_{0}^{\tilde{H}}\int_{-\infty}^{\tilde{K} \wedge m} \frac{2}{T\sqrt{2\pi T}} \, g \, db \, dm = \\ = & \underbrace{ \int_{0}^{\tilde{K}}\int_{-\infty}^{m} \frac{2}{T\sqrt{2\pi T}} \, g \, db \, dm}_{\mathbb{E}^{\mathbb{Q}}\left( \mathbbm{1}_{ \{ M_T<K \} } \right)}  +
+\underbrace{ \int_{\tilde{K}}^{\tilde{H}}\int_{-\infty}^{\tilde{K}} \frac{2}{T\sqrt{2\pi T}} \, g \, db \, dm }_{J_1(\tilde{H}, \tilde{K})}
+\end{split}
+\end{multline*}
+
+\begin{multline*}
+\begin{split}
+J_1(& \tilde{H}, \tilde{K}) = \\
+= & \int_{-\infty}^{\tilde{K}} \int_{\tilde{K}}^{\tilde{H}} \frac{2}{T\sqrt{2\pi T}} \, g \, dm \, db =
+\int_{-\infty}^{\tilde{K}} -\frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2}e^{-\frac{1}{2T}(2m-b)^2}e^{\theta b-\frac{T\theta^2}{2}} |_{\tilde{K}}^{\tilde{H}} db = \\ = & \frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2} \int_{-\infty}^{\tilde{K}} e^{-\frac{1}{2T}(b-2\tilde{K})^2}e^{\theta b-\frac{T\theta^2}{2}} -  e^{-\frac{1}{2T}(b-2\tilde{H})^2}e^{\theta b-\frac{T\theta^2}{2}}db = \\ = & \frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2} \int_{-\infty}^{\tilde{K}} e^{-\frac{1}{2T}(b-2\tilde{K})^2}e^{\theta b-\frac{T\theta^2}{2}} \, db - \frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2} \int_{-\infty}^{\tilde{K}} e^{-\frac{1}{2T}(b-2\tilde{H})^2}e^{\theta b-\frac{T\theta^2}{2}} \, db 
+\end{split}
+\end{multline*}
+Robimy teraz zamiany zmiennych w obu całkach kładąc odpowiednio \\ $b_1:= b - 2\tilde{K}$ oraz $b_2:=b- 2\tilde{H}$.
+\begin{multline*}
+\begin{split}
+J_1(\tilde{H}, \tilde{K}) = & e^{2 \theta \tilde{K}} \frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2} \int_{-\infty}^{-\tilde{K}} e^{-\frac{1}{2T}(b_1-\theta T)^2} \, db_1 - \\ - & e^{2 \theta \tilde{H}} \frac{2}{T\sqrt{2\pi T}} \, \frac{T}{2} \int_{-\infty}^{-\tilde{H}} e^{-\frac{1}{2T}(b_2-\theta T)^2} \, db_2 = \\ = & e^{2 \theta \tilde{K}}  \Phi \Scale[0.8]{\left(\frac{-\tilde{K}-T\theta}{\sqrt{T}}\right)}  - e^{2 \theta \tilde{H}} \Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)}
+\end{split}
+\end{multline*}
+To w połączeniu ze stwierdzeniem 4.2 daje:
+\begin{multline*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}}\left(\mathbbm{1}_{ \{ M_T < H, \, S_T < K \} } \right) = & \mathbb{E}^{\mathbb{Q}}\left( \mathbbm{1}_{ \{ M_T<H \} } \right) +  e^{2 \theta \tilde{K}}  \Phi \Scale[0.8]{\left(\frac{-\tilde{K}-T\theta}{\sqrt{T}}\right)}  - e^{2 \theta \tilde{H}} \Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)} = \\ = & \Phi \Scale[0.8]{\left(\frac{\tilde{K}-T\theta}{\sqrt{T}}\right)} - e^{2 \theta \tilde{H}}\Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\theta}{\sqrt{T}}\right)}
+\end{split}
+\end{multline*}
+
+\end{proof}
+
+\section{Uzupełniające opcje typu aktywo albo nic}
+Uzupełnimy teraz wzory z poprzedniej sekcji o dwa kolejne. 
+
+\begin{stw} Jeśli $K < H$ to cena barierowej opcji binarnej o wypłacie $S_T\mathbbm{1}_{\{ M_T<H \}}$ wyraża się wzorem:
+\begin{equation*}
+C\left( S_T\mathbbm{1}_{\{ M_T<H \}} \right) = S_0 \Scale[1.0]{ \left(\Phi \left(\frac{ \tilde{H}-\xi T }{\sqrt{T}}\right) - e^{2H\xi}\Phi \left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right)\right) }
+\end{equation*} gdzie: $\xi = \frac{r}{\sigma}+\frac{\sigma}{2}.$
+\begin{proof}
+
+Wartość oczekiwana wypłaty rozważanej przez nas opcji względem miary martyngałowej wyraża się całką:
+\begin{multline*}
+\begin{split}
+\mathbb{E}^{\mathbb{Q}} \left( S_T\mathbbm{1}_{\{ M_T<H \}} \right) = & \int_{-\infty}^{\tilde{H}} \int_{-\infty}^{+\infty}S_0 e^{\sigma b}\frac{2}{T\sqrt{2\pi T}}\,g_{\theta}(m,b) \,db\,dm = \\ = & e^{rT }S_0\int_{-\infty}^{\tilde{H}} \int_{-\infty}^{+\infty} \frac{2}{T\sqrt{2\pi T}}\,g_{\theta+\sigma}(m,b) \,db\,dm.
+\end{split}
+\end{multline*}
+
+Stała $e^{rT }$ pojawia się przed całką ponieważ $\theta + \frac{\sigma}{2}= \frac{r}{\sigma}-\frac{\sigma}{2} + \frac{\sigma}{2}= \frac{r}{\sigma}$ co daje: $e^{-\frac{T\theta^2}{2}} = e^{-\frac{T(\theta+\sigma)^2}{2}} e^{T\sigma(\theta +\frac{\sigma}{2})}  = e^{-\frac{T(\theta+\sigma)^2}{2}} e^{r T } $.
+\vspace{0.5cm}
+
+Otrzymaliśmy całkę takiej samej postaci jak w stwierdzeniu 4.2. \\
+Teraz wystarczy użyć wyprowadzonego już przez nas wcześniej wzoru na 
+$\mathbb{E}^{\mathbb{Q}}\left(\mathbbm{1}_{M_T < H} \right)$ by otrzymać:
+\begin{equation*}
+\mathbb{E}^{\mathbb{Q}} \left( S_T\mathbbm{1}_{\{ M_T<H \}} \right) = e^{rT }S_0 \left(\Phi \Scale[0.8]{\left(\frac{\tilde{H}-T\xi}{\sqrt{T}}\right)} - e^{2\tilde{H}\xi}\Phi \Scale[0.8]{\left(\frac{-\tilde{H}-T\xi}{\sqrt{T}}\right)}\right).
+\end{equation*}
+
+
+Na koniec wystarczy przemnożyć wynik przez $e^{-rT}$.
+
+\end{proof}
+
+
+\end{stw}
+
+
+\begin{stw} Jeśli $K < H$ oraz $0<H$ to cena binarnej opcji up-out put typu aktywo albo nic wyraża się wzorem:
+\begin{equation*}
+C\left( S_T\mathbbm{1}_{\{ M_T<H,\, S_T < K \}} \right) = S_0\Scale[1.0]{\left(\Phi \left(\frac{ \tilde{K}-\xi T }{\sqrt{T}} \right) - e^{2 \theta \tilde{H}}\Phi \left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right) \right)}. 
+\end{equation*}
+\end{stw}
+
+\begin{proof}
+W pełni analogiczny do dowodu poprzedniego stwierdzenia. 
+\end{proof}
+%--------------------------------------------------------------------------------------------
+\section{Zestawienie wzorów dla opcji walutowych}
+Rozważmy teraz model, w którym mamy dwie waluty $DOM$ oraz $FOR$ które będziemy oznaczać odpowiednio symbolami $\diamondsuit$ oraz $\mho$. Niech $r$ będzie stopą kapitalizacji ciągłej dla $\diamondsuit$, a $q$ będzie stopą kapitalizacji ciągłej dla $\mho$. Załóżmy ponadto, że w chwili $t$ możemy wymienić jednostkę $\mho$ na $ S_t$ jednostek $\diamondsuit$, oraz jednostkę $\diamondsuit$ na $\frac{1}{S_t}$ jednostek $\mho$. 
+Niech $X_T$ będzie zmienną losową $\mathscr{F}_T$-mierzalną.
+Oznaczenia $C^{\mho}$, $C^{\diamondsuit}$ zastały wprowadzone w poprzednim rozdziale.
+
+
+ Załóżmy że kurs waluty $\mho$ wyrażony w $\diamondsuit$ spełnia równanie:
+\begin{equation*}
+dS_t = S_t(\mu dt + \sigma dW_t).
+\end{equation*}
+
+Do wyceny wykorzystamy model rynku $M(\diamondsuit)=[e^{qt}S_t,e^{rt}]$. \\
+W poniższych wzorach:
+$\theta:=\theta(r,q) = \frac{r-q}{\sigma}-\frac{\sigma}{2}$,\\ $\tilde{K} = \frac{1}{\sigma}\ln\frac{K}{S_0}$,  $\tilde{H} = \frac{1}{\sigma}\ln\frac{H}{S_0}$ , $\xi:=\xi(r,q) = \frac{r-q}{\sigma}+\frac{\sigma}{2} $,\\ zwróćmy uwagę na fakt: $\theta(q,r) = -\xi(r,q). $
+\begin{stw} Wzory ze stwierdzeń 4.1-4.5 mają następujące odpowiedniki dla opcji w których aktywo wypłaca ciągłą dywidendę względem stopy $q$.
+\vspace{0.5cm}
+
+
+\begin{itemize} 
+\item $C^{\diamondsuit}\left( \mathbbm{1}_{ \{ S_T<K \} } \right) =  e^{-rT}\Phi \left(\frac{ \tilde{K} - \theta T }{\sqrt{T}}\right) $
+
+\item $C^{\diamondsuit}\left( \mathbbm{1}_{ \{ M_T<H \} }\right) = e^{-rT}\left(\Phi(\frac{ \tilde{H}-\theta T }{\sqrt{T}}) - e^{2\tilde{H}\theta}\Phi(\frac{-\tilde{H}-\theta T  }{\sqrt{T}})\right) $
+
+\item $ C^{\diamondsuit}\left(\mathbbm{1}_{ \{ M_T < H, \, S_T < K \} }\right) = e^{-rT}\left(\Phi \left(\frac{ \tilde{K}-\theta T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi\left(\frac{ -\tilde{H}-\theta T }{\sqrt{T}}\right)  \right) $
+
+\item $ C^{\diamondsuit}\left( S_T\mathbbm{1}_{\{ M_T<H \}} \right) = S_0e^{-qT}\left(\Phi \left(\frac{ \tilde{H}-\xi T }{\sqrt{T}}\right) - e^{2H\xi}\Phi \left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right)\right) $ 
+
+\item $ C^{\diamondsuit}\left( S_T\mathbbm{1}_{\{ M_T<H,\, S_T < K \}}\right) = S_0e^{-qT}\left(\Phi\left(\frac{ \tilde{K} - \xi T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi \left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right) \right) $
+\end{itemize}
+
+\begin{proof} $ $\newline
+$ \mathbb{E}^{Q^{\diamondsuit}} \left( \mathbbm{1}_{ \{ S_T<K \} } \right) $, $\mathbb{E}^{Q^{\diamondsuit}} \left( \mathbbm{1}_{ \{ M_T<H \} } \right) $, $\mathbb{E}^{Q^{\diamondsuit}} \left( \mathbbm{1}_{ \{ M_T<H, \, S_T < K \} } \right) $, $\mathbb{E}^{Q^{\diamondsuit}} \left( S_T \mathbbm{1}_{ \{ M_T<H \} } \right) $, $\mathbb{E}^{Q^{\diamondsuit}} \left( S_T \mathbbm{1}_{ \{ M_T<H, \, S_T < K \} } \right) $ obliczamy tak samo jak w stwierdzeniach \\ (4.1-4.5), ale używając stopy kapitalizacji ciągłej równej $r-q$, na koniec dyskontujemy względem stopy $r$.
+
+\end{proof}
+
+
+\end{stw}
+
+
+
+
+
+
+
+
+
+%--------------SYMETRIE------------------------------------------------------------------------------
+\section{Symetrie}
+W każdym z następnych stwierdzeń używamy twierdzenia 3.2 czyli równości: 
+\begin{equation*}
+C^{\diamondsuit}(X_T) = C^{\mho} \left( \frac{X_T}{S_T}\right) S_0 
+\end{equation*}
+
+
+\begin{stw} Cena opcji call typu aktywo albo nic wyraża się wzorem:
+\begin{equation*}
+C^{\diamondsuit}\left( S_T \mathbbm{1}_{ \{ S_T>K \} } \right) = S_0 e^{-qT} \Scale[1.0]{  \Phi \left(\frac{ -\tilde{K}+\xi T }{\sqrt{T}} \right)  }
+\end{equation*}
+gdzie $\xi = \frac{r-q}{\sigma} + \frac{\sigma}{2}$, $\tilde{K} = \frac{1}{\sigma}\ln(\frac{K}{S_0}).$
+\end{stw}
+
+\begin{proof}
+Łatwo widać że:
+ \begin{equation*} C^{\diamondsuit}\left( S_T \mathbbm{1}_{ \{ S_T>K \} } \right) = S_0 C^{\mho}\left(\mathbbm{1}_{ \{ S_T>K \} }\right) = S_0 C^{\mho}\left(\mathbbm{1}_{ \{ \frac{1}{S_T}<\frac{1}{K} \} }\right)
+ \end{equation*} 
+
+ Na mocy Stwierdzenia 4.6 cena opcji wynosi:
+\begin{multline*} 
+C^{\mho}\left(\mathbbm{1}_{ \{ \frac{1}{S_T}<\frac{1}{K} \} }\right) = e^{-qT}\Scale[1.0]{\Phi \left(\frac{ \frac{1}{\sigma}\ln \left({\frac{K^{-1}}{S_T^{-1}}} \right)-(-\xi)T  }{\sqrt{T}}\right)} = e^{-qT} \Scale[1.0]{  \Phi \left(\frac{ -\tilde{K}+\xi T }{\sqrt{T}}\right) } 
+\end{multline*}
+
+
+\end{proof}
+Kolejne dwa wzory potraktujemy zbiorczo.
+%---------------------------------------------------------------------
+%----------------DRUGIE STWIERDZENIE----------------------------------
+\begin{stw}
+Cena opcji binarnej typu aktywo albo nic o wypłacie $S_T \mathbbm{1}_{\{ m_T > H \}}$ wyraża się wzorem:
+
+\begin{equation*}
+C^{\diamondsuit}\left(S_T \mathbbm{1}_{ \{ m_T>H \} } \right) = S_0 e^{-qT}\left(\Phi \left(\frac{ -\tilde{H}+\xi T }{\sqrt{T}}\right) - e^{2\tilde{H}\xi}\Phi\left(\frac{ \tilde{H}+\xi T }{\sqrt{T}} \right)\right)
+\end{equation*}
+$ $ \\
+Cena opcji binarnej down-out call typu aktywo albo nic wyraża się wzorem:
+
+\begin{equation*}
+ C^{\diamondsuit}\left( \ S_T\mathbbm{1}_{ \{ m_T > H, \,  S_T > K \} } \right) = S_0 e^{-qT}\left(\Phi \left(\frac{ -\tilde{K}+\xi T }{\sqrt{T}}\right) - e^{2 \xi \tilde{H}}\Phi\left(\frac{ \tilde{H}+\xi T }{\sqrt{T}}\right) \right). 
+\end{equation*}
+\end{stw}
+
+\begin{proof}
+Widzimy że $\frac{1}{m_t} = \max\limits_{0 \le t \le T} S_t^{-1} $
+
+\begin{equation*}
+\begin{split}
+C^{\diamondsuit}\left( S_T \mathbbm{1}_{ \{ m_T>H \} } \right)  = & S_0 C^{\mho}\left(\mathbbm{1}_{ \{ m_T>H \} } \right) = S_0 C^{\mho}\left( \mathbbm{1}_{ \{ \frac{1}{m_T} < \frac{1}{H}  \} }  \right) = \\ = & S_0 C^{\mho}\left( \mathbbm{1}_{ \{ \max\limits_{0 \le t \le T} S_t^{-1} < \frac{1}{H}  \} } \right)
+\end{split}
+\end{equation*}
+\begin{equation*}
+C^{\diamondsuit}\left( S_T \mathbbm{1}_{ \{ m_T>H, \, S_T > K \} } \right)  = S_0 C^{\mho}\left(\mathbbm{1}_{ \{ \max\limits_{0 \le t \le T} S_t^{-1} < \frac{1}{H}, \, S_t^{-1} < \frac{1}{K} \} } \right)
+\end{equation*}
+
+Teraz znowu stosujemy wzory ze Stwierdzenia 4.6, dla stopy $q$ oraz procesu $S_t^{-1}$. Jak widzieliśmy w poprzednim stwierdzeniu sprowadza się do zamiany $\theta$ na $-\xi$, oraz zmiany znaków przy $\tilde{K}$ i $\tilde{H}$ na przeciwne. 
+\end{proof}
+
+\begin{stw} 
+Cena opcji binarnej typu gotówka albo nic o wypłacie $\mathbbm{1}_{\{ m_T > H \}}$ wyraża się wzorem:
+
+\begin{equation*}
+C^{\diamondsuit} \left( \mathbbm{1}_{\{ m_T > H \}} \right) = e^{-rT} \Scale[1.0]{ \left(\Phi \left(\frac{ -\tilde{H}+\xi T }{\sqrt{T}}\right) - e^{2H\theta}\Phi\left(\frac{ \tilde{H}+\theta T }{\sqrt{T}}\right)\right) }
+\end{equation*}
+
+$ $ \\
+Cena opcji binarnej down-out call typu gotówka albo nic wyraża się wzorem: 
+\begin{equation*}
+C^{\diamondsuit}\left(\mathbbm{1}_{\{ m_T > H,\, S_T > K \}}\right) = e^{-rT} \Scale[1.0]{\left(\Phi\left(\frac{ -\tilde{K} + \theta T }{\sqrt{T}}\right) - e^{2 \xi \tilde{H}}\Phi\left(\frac{ \tilde{H}+\theta T }{\sqrt{T}}\right) \right)}.
+\end{equation*}
+
+
+
+
+
+\end{stw}
+
+\begin{proof} Patrz komentarz do poprzedniego stwierdzenia.
+\begin{multline*}
+\begin{split}
+& C^{\diamondsuit}\left(\mathbbm{1}_{\{ m_T > H \}}\right) = S_0 C^{\mho}\left( S_t^{-1} \mathbbm{1}_{\{ \max\limits_{0 \le t \le T} S_t^{-1} < \frac{1}{H} \}} \right) \\
+& C^{\diamondsuit}\left(\mathbbm{1}_{\{ m_T > H, S_T > K \}}\right)  = S_0 C^{\mho}\left(S_t^{-1} \mathbbm{1}_{\{ \max\limits_{0 \le t \le T} S_t^{-1} < \frac{1}{H},\, S_t^{-1} < \frac{1}{K} \}}\right) 
+\end{split}
+\end{multline*}
+\end{proof}
+
+\section{Przykład wyceny opcji niebarierowej}
+W tej sekcji wycenimy opcję put typu up-in. \\
+\begin{stw} Cena opcji put typu up-in wyraża się wzorem:
+\begin{multline*}
+\begin{split}
+& C^{\diamondsuit} \left( (K - S_T)\mathbbm{1}_{ \{M_T < H, \hspace{0.15 cm} S_T < K \} } \right) = \\ & =  \Scale[1.0]{e^{-rT}\left(\Phi \left(\frac{ \tilde{K}-\theta T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi\left( \frac{ -\tilde{H}-\theta T }{\sqrt{T}}\right)  \right)} - \Scale[1.0]{S_0 e^{-qT} \Scale[1.0]{\left(\Phi\left(\frac{ \tilde{K} - \xi T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi\left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right) \right)} }.
+\end{split}
+\end{multline*}
+\end{stw}
+
+\begin{proof} Stosujemy wzór trzeci ze stwierdzenia 4.6 oraz drugi \\ ze stwierdzenia 4.9,  w tym drugim zamieniając miejscami waluty. $ $ \\
+\begin{multline*}
+\begin{split}
+C^{\diamondsuit} & \left( (K - S_T)\mathbbm{1}_{ \{M_T < H, \hspace{0.15 cm} S_T < K \} } \right) = \\ & =  KC^{\diamondsuit} \left( \mathbbm{1}_{ \{M_T < H, \hspace{0.15 cm} S_T < K \}} \right) - C^{\diamondsuit}\left( S_T  \mathbbm{1}_{ \{M_T < H, \hspace{0.15 cm} S_T < K \}} \right) = \\ & = KC^{\diamondsuit} \left( \mathbbm{1}_{ \{M_T < H, \hspace{0.15 cm} S_T < K \}} \right) - S_0 C^{\mho}\left(\mathbbm{1}_{ \{ \min\limits_{0 \le t \le T} S_t^{-1} > H^{-1}, \hspace{0.15 cm} S^{-1}_T > K^{-1} \}} \right) = \\ & =  \Scale[1.0]{Ke^{-rT}\left(\Phi \left(\frac{ \tilde{K}-\theta T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi\left(\frac{ -\tilde{H}-\theta T }{\sqrt{T}}\right)  \right)} - S_0 e^{-qT} \Scale[1.0]{\left(\Phi\left(\frac{ \tilde{K} - \xi T }{\sqrt{T}}\right) - e^{2 \theta \tilde{H}}\Phi\left(\frac{ -\tilde{H}-\xi T }{\sqrt{T}}\right) \right)}
+\end{split}
+\end{multline*}
+\end{proof}
+
+
+
+
+
+\begin{thebibliography}{2}
+\bibitem{Bro} 
+J.M. Harrison, 
+\textit{Brownian Motion and Stochastic Flow Systems.} \\
+J. Wiley, 1985.
+
+\bibitem{quanto} 
+U. Wystup,
+\textit{Foreign Exchange Quanto Options }. \\
+Frankfurt School of Finance and Management, 2008.
+
+\bibitem{forex}
+U. Wystup,
+\textit{Foreign Exchange Symmetries}. \\
+Frankfurt School of Finance and Management, 2008. 
+
+\bibitem{struct}
+U. Wystup,
+\textit{FX Options and Structured Products. } \\
+Wiley Finance Series, 2006.
+
+\bibitem{okse}
+\textit{B. Oksendal, Stochastic Differential Equations.} \\
+Springer, 2003.
+
+\bibitem{szt} 
+J. Jakubowski, R. Sztencel,
+\textit{Wstęp do teorii prawdopodobieństwa}. \\
+SCRIPT, 2010.
+
+\end{thebibliography}
+
+\end{document}
+
+
+
